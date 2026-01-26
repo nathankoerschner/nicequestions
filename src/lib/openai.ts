@@ -51,15 +51,22 @@ User's submitted question: "${text}"`;
   return result as GPTValidationResult;
 }
 
-// Map categories to Unsplash search terms for better results
-const CATEGORY_SEARCH_TERMS: Record<Category, string[]> = {
-  "for-crossroads": ["crossroads", "paths", "decisions", "journey", "choices"],
-  "for-loved-ones": ["family", "loved ones", "together", "caring", "warmth"],
-  "making-friends": ["friendship", "meeting", "conversation", "socializing", "connection"],
-  "big-questions": ["universe", "cosmos", "philosophy", "wonder", "contemplation"],
-  "for-a-gathering": ["gathering", "celebration", "party", "group", "social"],
-  "meet-yourself": ["reflection", "mirror", "identity", "solitude", "meditation"],
-};
+// General aesthetic search terms - unrelated to question content per spec
+// Mix of nature, everyday moments, architecture, and human elements
+const IMAGE_SEARCH_TERMS = [
+  // Nature
+  "nature", "landscape", "forest", "ocean", "mountains", "sunset", "morning light",
+  // Everyday moments  
+  "coffee", "books", "morning routine", "quiet moment", "simple life",
+  // Hands and human elements
+  "hands", "holding hands", "hand holding coffee", "writing by hand", "hands working",
+  // People doing everyday things
+  "person walking", "reading book", "cooking", "gardening", "bike ride",
+  // Architecture and urban
+  "architecture", "buildings", "street photography", "urban", "windows",
+  // Aesthetic/artistic
+  "minimal", "black and white photography", "film photography", "light and shadow"
+];
 
 export interface ImageResult {
   buffer: Buffer;
@@ -68,7 +75,7 @@ export interface ImageResult {
 
 export async function generateQuestionImage(
   _question: string,
-  category: Category,
+  _category: Category,
   usedImageIds: Set<string> = new Set(),
   maxRetries: number = 5
 ): Promise<ImageResult> {
@@ -77,12 +84,9 @@ export async function generateQuestionImage(
     throw new Error("UNSPLASH_ACCESS_KEY environment variable is not set");
   }
 
-  // Pick a random search term for this category
-  const searchTerms = CATEGORY_SEARCH_TERMS[category];
-  
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    // Rotate through search terms on retries for more variety
-    const searchTerm = searchTerms[(attempt) % searchTerms.length];
+    // Pick a random search term from the general pool
+    const searchTerm = IMAGE_SEARCH_TERMS[Math.floor(Math.random() * IMAGE_SEARCH_TERMS.length)];
 
     const response = await fetch(
       `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish`,
