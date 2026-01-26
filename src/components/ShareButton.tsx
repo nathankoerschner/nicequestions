@@ -18,7 +18,6 @@ export default function ShareButton({ question }: ShareButtonProps) {
   const handleShare = async () => {
     const shareData = {
       title: "Nice Questions",
-      text: question.text,
       url: shareUrl,
     };
 

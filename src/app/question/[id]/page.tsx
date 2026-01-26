@@ -1,64 +1,53 @@
-"use client";
-
-import { useState, useEffect, use } from "react";
-import { Question } from "@/lib/types";
-import Image from "next/image";
+import { Metadata } from "next";
 import Link from "next/link";
-import ShareButton from "@/components/ShareButton";
+import QuestionPageClient from "@/components/QuestionPageClient";
 
 interface QuestionPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function QuestionPage({ params }: QuestionPageProps) {
-  const { id } = use(params);
-  const [question, setQuestion] = useState<Question | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [animationStage, setAnimationStage] = useState<
-    "initial" | "zoom" | "flip" | "reveal"
-  >("initial");
+export async function generateMetadata({ params }: QuestionPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://nicequestions.com";
 
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      try {
-        const response = await fetch(`/api/question/${id}`);
-        if (!response.ok) {
-          throw new Error("Question not found");
-        }
-        const data = await response.json();
-        setQuestion(data.question);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  return {
+    title: "Nice Questions",
+    description: "Check out this nice question",
+    openGraph: {
+      title: "Nice Questions",
+      description: "Check out this nice question",
+      type: "website",
+      url: `${baseUrl}/question/${id}`,
+    },
+    twitter: {
+      card: "summary",
+      title: "Nice Questions",
+      description: "Check out this nice question",
+    },
+  };
+}
 
-    fetchQuestion();
-  }, [id]);
-
-  useEffect(() => {
-    if (question && !isLoading) {
-      // Animation sequence
-      const timers = [
-        setTimeout(() => setAnimationStage("zoom"), 100),
-        setTimeout(() => setAnimationStage("flip"), 1200),
-        setTimeout(() => setAnimationStage("reveal"), 1900),
-      ];
-      return () => timers.forEach(clearTimeout);
+async function getQuestion(id: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  try {
+    const response = await fetch(`${baseUrl}/api/question/${id}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
     }
-  }, [question, isLoading]);
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-white" />
-      </div>
-    );
+    const data = await response.json();
+    return data.question;
+  } catch {
+    return null;
   }
+}
 
-  if (error || !question) {
+export default async function QuestionPage({ params }: QuestionPageProps) {
+  const { id } = await params;
+  const question = await getQuestion(id);
+
+  if (!question) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4">
         <h1 className="mb-4 text-2xl font-semibold text-white">
@@ -77,68 +66,5 @@ export default function QuestionPage({ params }: QuestionPageProps) {
     );
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4">
-      {/* Card container */}
-      <div className="perspective-1000 relative">
-        <div
-          className={`relative transition-all duration-700 transform-style-3d ${
-            animationStage === "initial"
-              ? "h-32 w-24 opacity-0 scale-50"
-              : animationStage === "zoom"
-              ? "h-[60vh] w-[75vw] max-w-md opacity-100 scale-100"
-              : animationStage === "flip" || animationStage === "reveal"
-              ? "h-[60vh] w-[75vw] max-w-md opacity-100 scale-100 rotate-y-180"
-              : ""
-          }`}
-        >
-          {/* Front - Image */}
-          <div className="absolute inset-0 backface-hidden overflow-hidden rounded-3xl">
-            <Image
-              src={question.imageUrl}
-              alt=""
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-
-          {/* Back - Question */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center backface-hidden rotate-y-180 rounded-3xl bg-black p-8">
-            <p className="text-center text-2xl font-medium leading-relaxed text-white md:text-3xl">
-              {question.text}
-            </p>
-            <div className="mt-8 flex items-center gap-4">
-              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-white/70">
-                {question.category}
-              </span>
-              <ShareButton question={question} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div
-        className={`mt-12 flex flex-col items-center gap-4 transition-opacity duration-500 ${
-          animationStage === "reveal" ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <Link
-          href="/"
-          className="rounded-full bg-white px-8 py-3 font-medium text-black transition-opacity hover:opacity-90"
-        >
-          Explore More Questions
-        </Link>
-        <button
-          onClick={() => {
-            window.location.href = "/?submit=true";
-          }}
-          className="text-zinc-400 transition-colors hover:text-white"
-        >
-          Submit Your Own
-        </button>
-      </div>
-    </div>
-  );
+  return <QuestionPageClient question={question} />;
 }
