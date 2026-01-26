@@ -82,8 +82,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main content */}
-      <div className="pb-32 px-2 md:px-4">
+      {/* Main content - edge to edge */}
+      <div className="pb-32">
         {isLoading ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-black" />

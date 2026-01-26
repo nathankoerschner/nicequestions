@@ -23,14 +23,6 @@ function getCardSize(index: number): "small" | "medium" | "large" {
   return pattern[index % pattern.length];
 }
 
-// Determine which cards bleed off edges
-function getBleedStyle(index: number): string {
-  // Every 5th card bleeds left, every 7th bleeds right
-  if (index % 5 === 0) return "-ml-4 md:-ml-8";
-  if (index % 7 === 2) return "-mr-4 md:-mr-8";
-  return "";
-}
-
 export default function MasonryGrid({
   questions,
   onCardClick,
@@ -44,15 +36,14 @@ export default function MasonryGrid({
   }
 
   return (
-    <div className="columns-2 gap-3 md:columns-3 lg:columns-4 xl:columns-5 md:gap-4">
+    <div className="columns-2 gap-2 md:columns-3 md:gap-3 lg:columns-4 xl:columns-5">
       {questions.map((question, index) => (
-        <div key={question.id} className={getBleedStyle(index)}>
-          <QuestionCard
-            question={question}
-            onClick={() => onCardClick(question)}
-            size={getCardSize(index)}
-          />
-        </div>
+        <QuestionCard
+          key={question.id}
+          question={question}
+          onClick={() => onCardClick(question)}
+          size={getCardSize(index)}
+        />
       ))}
     </div>
   );
