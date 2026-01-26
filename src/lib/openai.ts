@@ -15,18 +15,18 @@ function getOpenAI(): OpenAI {
 export async function validateAndCleanQuestion(
   text: string
 ): Promise<GPTValidationResult> {
-  const prompt = `You are a curator for a thoughtful question-sharing app called "Nice Questions."
+  const prompt = `You are a curator for a question-sharing app called "Nice Questions."
 Your job is to evaluate submitted questions and decide if they belong.
 
-Good questions are:
-- Open-ended and thought-provoking
-- Encourage meaningful conversations
-- Safe for all ages
-- Not yes/no questions
-- Not offensive, political, or controversial
-- Not spam or nonsense
+ACCEPT most questions. Only reject if the submission:
+- Is NOT a question (statements, commands, random text)
+- Contains violence, hate speech, or explicit content
+- Is obvious spam or gibberish
 
-If the question is good, clean it up (fix grammar, punctuation, capitalization) and categorize it.
+Yes/no questions are fine. Vague questions are fine. Simple questions are fine.
+Be very permissive - when in doubt, accept it.
+
+If accepted, clean it up (fix grammar, punctuation, capitalization) and categorize it.
 
 Categories: ${CATEGORIES.join(", ")}
 
