@@ -55,17 +55,17 @@ export async function generateQuestionImage(
   _question: string,
   category: Category
 ): Promise<Buffer> {
-  const prompt = `Create an abstract, artistic image that evokes the feeling of "${category}" and contemplation.
+  const prompt = `Create a photorealistic image related to the theme of "${category}".
 The image should be:
-- Visually striking and modern
-- Abstract or semi-abstract
-- Rich in color and texture
+- A beautiful photograph of nature or daily life
+- Photorealistic, like a professional photograph
+- Natural lighting and composition
 - NOT contain any text or letters
 - Suitable as a card background
-- Evocative of deep thought and connection
+- Evocative and emotionally resonant
 
-Style: Contemporary digital art, painterly, dreamy
-Mood: Thoughtful, warm, inviting`;
+Style: Professional photography, natural, authentic
+Subject: Nature scenes (landscapes, plants, animals, weather) or everyday life moments (hands, objects, activities, spaces)`;
 
   const response = await getOpenAI().images.generate({
     model: "dall-e-3",
