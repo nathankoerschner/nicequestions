@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Question, Category } from "@/lib/types";
+import { Question, Category, LimitStatus } from "@/lib/types";
 import MasonryGrid from "@/components/MasonryGrid";
 import CardModal from "@/components/CardModal";
 import CategoryFilter from "@/components/CategoryFilter";
@@ -15,10 +15,22 @@ export default function Home() {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [limitStatus, setLimitStatus] = useState<LimitStatus | null>(null);
 
   useEffect(() => {
     fetchQuestions();
+    fetchLimits();
   }, []);
+
+  const fetchLimits = async () => {
+    try {
+      const response = await fetch("/api/limits");
+      const data = await response.json();
+      setLimitStatus(data);
+    } catch (error) {
+      console.error("Failed to fetch limits:", error);
+    }
+  };
 
   useEffect(() => {
     if (selectedCategory) {
@@ -44,8 +56,9 @@ export default function Home() {
 
   const handleSubmitClose = () => {
     setIsSubmitOpen(false);
-    // Refresh questions after submission
+    // Refresh questions and limits after submission
     fetchQuestions();
+    fetchLimits();
   };
 
   return (
@@ -84,14 +97,21 @@ export default function Home() {
       </div>
 
       {/* Submit FAB */}
-      <SubmitButton onClick={() => setIsSubmitOpen(true)} />
+      <SubmitButton
+        onClick={() => setIsSubmitOpen(true)}
+        disabled={limitStatus?.limitReached}
+      />
 
       {/* Modals */}
       <CardModal
         question={selectedQuestion}
         onClose={() => setSelectedQuestion(null)}
       />
-      <SubmitModal isOpen={isSubmitOpen} onClose={handleSubmitClose} />
+      <SubmitModal
+        isOpen={isSubmitOpen}
+        onClose={handleSubmitClose}
+        limitReached={limitStatus?.limitReached}
+      />
     </main>
   );
 }

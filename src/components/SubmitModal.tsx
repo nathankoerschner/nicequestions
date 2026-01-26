@@ -7,11 +7,12 @@ import Image from "next/image";
 interface SubmitModalProps {
   isOpen: boolean;
   onClose: () => void;
+  limitReached?: boolean;
 }
 
 type SubmitState = "form" | "loading" | "success" | "rejected" | "error";
 
-export default function SubmitModal({ isOpen, onClose }: SubmitModalProps) {
+export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitModalProps) {
   const [state, setState] = useState<SubmitState>("form");
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<Question | null>(null);
@@ -106,7 +107,39 @@ export default function SubmitModal({ isOpen, onClose }: SubmitModalProps) {
           </svg>
         </button>
 
-        {state === "form" && (
+        {state === "form" && limitReached && (
+          <div className="flex flex-col items-center py-8">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-8 w-8 text-zinc-400"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <h3 className="mt-4 text-xl font-semibold text-white">
+              Daily Limit Reached
+            </h3>
+            <p className="mt-2 text-center text-zinc-400">
+              We&apos;ve reached the maximum number of submissions for today.
+              Please come back tomorrow!
+            </p>
+            <button
+              onClick={resetAndClose}
+              className="mt-6 rounded-full bg-white px-6 py-2 font-medium text-black"
+            >
+              Got it
+            </button>
+          </div>
+        )}
+
+        {state === "form" && !limitReached && (
           <>
             <h2 className="mb-6 text-2xl font-semibold text-white">
               Submit a Question
