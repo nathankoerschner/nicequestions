@@ -11,11 +11,11 @@ function getAdminApp(): App {
     if (getApps().length === 0) {
       adminApp = initializeApp({
         credential: cert({
-          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-          privateKey: privateKey,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim(),
+          clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL?.trim(),
+          privateKey: privateKey?.trim(),
         }),
-        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET?.trim(),
       });
     } else {
       adminApp = getApps()[0];
