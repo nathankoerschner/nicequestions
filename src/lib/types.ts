@@ -7,24 +7,20 @@ export interface Question {
 }
 
 export type Category =
-  | "relationships"
-  | "self-reflection"
-  | "dreams"
-  | "memories"
-  | "hypotheticals"
-  | "values"
-  | "creativity"
-  | "connection";
+  | "for-crossroads"
+  | "for-loved-ones"
+  | "making-friends"
+  | "big-questions"
+  | "for-a-gathering"
+  | "meet-yourself";
 
 export const CATEGORIES: Category[] = [
-  "relationships",
-  "self-reflection",
-  "dreams",
-  "memories",
-  "hypotheticals",
-  "values",
-  "creativity",
-  "connection",
+  "for-crossroads",
+  "for-loved-ones",
+  "making-friends",
+  "big-questions",
+  "for-a-gathering",
+  "meet-yourself",
 ];
 
 export interface DailyLimits {
