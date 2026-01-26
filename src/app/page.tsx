@@ -96,11 +96,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Submit FAB */}
-      <SubmitButton
-        onClick={() => setIsSubmitOpen(true)}
-        disabled={limitStatus?.limitReached}
-      />
+      {/* Submit FAB - hidden when daily limit reached */}
+      {!limitStatus?.limitReached && (
+        <SubmitButton
+          onClick={() => setIsSubmitOpen(true)}
+        />
+      )}
 
       {/* Modals */}
       <CardModal
