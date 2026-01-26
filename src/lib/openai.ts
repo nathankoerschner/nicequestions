@@ -51,8 +51,11 @@ User's submitted question: "${text}"`;
   return result as GPTValidationResult;
 }
 
-// Using curated "Film" collection from Unsplash for high-quality aesthetic images
-const UNSPLASH_COLLECTION_ID = "ViZ7rtrjAgY"; // Film collection - 2300+ curated photos
+// Curated Unsplash collections for high-quality aesthetic images
+const UNSPLASH_COLLECTIONS = [
+  "ViZ7rtrjAgY", // Film - 2300+ curated photos
+  "1319040",     // Nature - 6600+ photos
+].join(",");
 
 export interface ImageResult {
   buffer: Buffer;
@@ -72,7 +75,7 @@ export async function generateQuestionImage(
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?collections=${UNSPLASH_COLLECTION_ID}&orientation=squarish`,
+      `https://api.unsplash.com/photos/random?collections=${UNSPLASH_COLLECTIONS}&orientation=squarish`,
       {
         headers: {
           Authorization: `Client-ID ${accessKey}`,
