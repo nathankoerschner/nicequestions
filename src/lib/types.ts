@@ -3,6 +3,7 @@ export interface Question {
   text: string;
   category: Category;
   imageUrl: string;
+  unsplashId?: string; // Track Unsplash photo ID to prevent duplicates
   createdAt: number;
 }
 

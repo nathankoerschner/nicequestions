@@ -1,70 +1,107 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getAdminDb } from "@/lib/firebase-admin";
+import Image from "next/image";
 import Link from "next/link";
-import QuestionPageClient from "@/components/QuestionPageClient";
 
-interface QuestionPageProps {
+interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: QuestionPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://nicequestions.com";
-
-  return {
-    title: "Nice Questions",
-    description: "Check out this nice question",
-    openGraph: {
-      title: "Nice Questions",
-      description: "Check out this nice question",
-      type: "website",
-      url: `${baseUrl}/question/${id}`,
-    },
-    twitter: {
-      card: "summary",
-      title: "Nice Questions",
-      description: "Check out this nice question",
-    },
-  };
+interface Question {
+  id: string;
+  text: string;
+  imageUrl: string;
+  category: string;
 }
 
-async function getQuestion(id: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  try {
-    const response = await fetch(`${baseUrl}/api/question/${id}`, {
-      cache: "no-store",
-    });
-    if (!response.ok) {
-      return null;
-    }
-    const data = await response.json();
-    return data.question;
-  } catch {
+async function getQuestion(id: string): Promise<Question | null> {
+  const db = getAdminDb();
+  const doc = await db.collection("questions").doc(id).get();
+
+  if (!doc.exists) {
     return null;
   }
+
+  return {
+    id: doc.id,
+    ...doc.data(),
+  } as Question;
 }
 
-export default async function QuestionPage({ params }: QuestionPageProps) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const question = await getQuestion(id);
 
   if (!question) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-black px-4">
-        <h1 className="mb-4 text-2xl font-semibold text-white">
-          Question not found
-        </h1>
-        <p className="mb-8 text-zinc-400">
-          This question may have been removed or doesn&apos;t exist.
-        </p>
-        <Link
-          href="/"
-          className="rounded-full bg-white px-6 py-3 font-medium text-black transition-opacity hover:opacity-90"
-        >
-          Explore Questions
-        </Link>
-      </div>
-    );
+    return {
+      title: "Question Not Found | Nice Questions",
+    };
   }
 
-  return <QuestionPageClient question={question} />;
+  return {
+    title: question.text,
+    description: "A beautiful question from Nice Questions",
+    openGraph: {
+      title: question.text,
+      description: "A beautiful question from Nice Questions",
+      type: "website",
+      siteName: "Nice Questions",
+      images: [
+        {
+          url: question.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: question.text,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: question.text,
+      description: "A beautiful question from Nice Questions",
+      images: [question.imageUrl],
+    },
+  };
+}
+
+export default async function QuestionPage({ params }: Props) {
+  const { id } = await params;
+  const question = await getQuestion(id);
+
+  if (!question) {
+    notFound();
+  }
+
+  return (
+    <main className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
+      <div className="relative w-full max-w-md aspect-[3/4] overflow-hidden shadow-2xl">
+        {/* Background image */}
+        <Image
+          src={question.imageUrl}
+          alt=""
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Overlay with question */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
+          <p className="text-white text-2xl md:text-3xl font-medium leading-relaxed">
+            {question.text}
+          </p>
+          <span className="mt-4 inline-block rounded-full bg-white/20 px-4 py-2 text-sm text-white/80 w-fit">
+            {question.category}
+          </span>
+        </div>
+      </div>
+
+      <Link
+        href="/"
+        className="mt-8 text-white/60 hover:text-white transition-colors"
+      >
+        ← See all questions
+      </Link>
+    </main>
+  );
 }

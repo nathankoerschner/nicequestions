@@ -42,11 +42,21 @@ export default function Home() {
     }
   }, [selectedCategory, questions]);
 
+  // Fisher-Yates shuffle for random order on each load
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
   const fetchQuestions = async () => {
     try {
       const response = await fetch("/api/questions");
       const data = await response.json();
-      setQuestions(data.questions || []);
+      setQuestions(shuffleArray(data.questions || []));
     } catch (error) {
       console.error("Failed to fetch questions:", error);
     } finally {
@@ -96,11 +106,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Submit FAB */}
-      <SubmitButton
-        onClick={() => setIsSubmitOpen(true)}
-        disabled={limitStatus?.limitReached}
-      />
+      {/* Submit FAB - hidden when daily limit reached */}
+      {!limitStatus?.limitReached && (
+        <SubmitButton
+          onClick={() => setIsSubmitOpen(true)}
+        />
+      )}
 
       {/* Modals */}
       <CardModal

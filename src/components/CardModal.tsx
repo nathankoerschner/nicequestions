@@ -61,7 +61,7 @@ export default function CardModal({ question, onClose }: CardModalProps) {
           }`}
         >
           {/* Front of card - Image */}
-          <div className="absolute inset-0 backface-hidden overflow-hidden rounded-3xl">
+          <div className="absolute inset-0 backface-hidden overflow-hidden">
             <Image
               src={question.imageUrl}
               alt=""
@@ -72,7 +72,7 @@ export default function CardModal({ question, onClose }: CardModalProps) {
           </div>
 
           {/* Back of card - Question */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center backface-hidden rotate-y-180 rounded-3xl bg-black p-8">
+          <div className="absolute inset-0 flex flex-col items-center justify-center backface-hidden rotate-y-180 bg-black p-8">
             <p className="text-center text-2xl font-medium leading-relaxed text-white md:text-3xl">
               {question.text}
             </p>
