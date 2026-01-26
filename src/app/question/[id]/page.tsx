@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAdminDb } from "@/lib/firebase-admin";
-import Image from "next/image";
-import Link from "next/link";
+import DeepLinkView from "@/components/DeepLinkView";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -73,35 +72,5 @@ export default async function QuestionPage({ params }: Props) {
     notFound();
   }
 
-  return (
-    <main className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      <div className="relative w-full max-w-md aspect-[3/4] overflow-hidden shadow-2xl">
-        {/* Background image */}
-        <Image
-          src={question.imageUrl}
-          alt=""
-          fill
-          className="object-cover"
-          priority
-        />
-
-        {/* Overlay with question */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
-          <p className="text-white text-2xl md:text-3xl font-medium leading-relaxed">
-            {question.text}
-          </p>
-          <span className="mt-4 inline-block rounded-full bg-white/20 px-4 py-2 text-sm text-white/80 w-fit">
-            {question.category}
-          </span>
-        </div>
-      </div>
-
-      <Link
-        href="/"
-        className="mt-8 text-white/60 hover:text-white transition-colors"
-      >
-        ← See all questions
-      </Link>
-    </main>
-  );
+  return <DeepLinkView questionId={id} />;
 }

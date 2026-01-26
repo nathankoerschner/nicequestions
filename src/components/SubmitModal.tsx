@@ -2,29 +2,27 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Question } from "@/lib/types";
-import Image from "next/image";
 
 interface SubmitModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (question: Question) => void;
   limitReached?: boolean;
 }
 
 type SubmitState = "form" | "loading" | "success" | "rejected" | "error";
 
-export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitModalProps) {
+export default function SubmitModal({ isOpen, onClose, onSuccess, limitReached }: SubmitModalProps) {
   const [state, setState] = useState<SubmitState>("form");
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<Question | null>(null);
   const [error, setError] = useState<string>("");
-  const [showFlipped, setShowFlipped] = useState(false);
 
   const resetAndClose = useCallback(() => {
     setState("form");
     setQuestion("");
     setResult(null);
     setError("");
-    setShowFlipped(false);
     onClose();
   }, [onClose]);
 
@@ -40,11 +38,13 @@ export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitMod
 
   useEffect(() => {
     if (state === "success" && result) {
-      // Trigger flip after showing the card
-      const timer = setTimeout(() => setShowFlipped(true), 800);
-      return () => clearTimeout(timer);
+      // Close modal and trigger the full card animation
+      if (onSuccess) {
+        onSuccess(result);
+      }
+      resetAndClose();
     }
-  }, [state, result]);
+  }, [state, result, onSuccess, resetAndClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,42 +176,6 @@ export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitMod
           </div>
         )}
 
-        {state === "success" && result && (
-          <div className="flex flex-col items-center">
-            <h2 className="mb-6 text-2xl font-semibold text-white">
-              Your question is live!
-            </h2>
-            <div className="perspective-1000 h-64 w-48">
-              <div
-                className={`relative h-full w-full transition-transform duration-700 transform-style-3d ${
-                  showFlipped ? "rotate-y-180" : ""
-                }`}
-              >
-                {/* Front - Image */}
-                <div className="absolute inset-0 backface-hidden overflow-hidden">
-                  <Image
-                    src={result.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                {/* Back - Question */}
-                <div className="absolute inset-0 flex items-center justify-center backface-hidden rotate-y-180 bg-black p-4">
-                  <p className="text-center text-sm font-medium text-white">
-                    {result.text}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={resetAndClose}
-              className="mt-6 rounded-full bg-white px-6 py-2 font-medium text-black"
-            >
-              Done
-            </button>
-          </div>
-        )}
 
         {(state === "rejected" || state === "error") && (
           <div className="flex flex-col items-center py-8">

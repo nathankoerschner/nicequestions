@@ -66,9 +66,16 @@ export default function Home() {
 
   const handleSubmitClose = () => {
     setIsSubmitOpen(false);
-    // Refresh questions and limits after submission
-    fetchQuestions();
+    // Refresh limits after submission
     fetchLimits();
+  };
+
+  const handleSubmitSuccess = (newQuestion: Question) => {
+    // Add the new question to the beginning of the list
+    setQuestions((prev) => [newQuestion, ...prev]);
+    setFilteredQuestions((prev) => [newQuestion, ...prev]);
+    // Show the CardModal with the new question
+    setSelectedQuestion(newQuestion);
   };
 
   return (
@@ -121,6 +128,7 @@ export default function Home() {
       <SubmitModal
         isOpen={isSubmitOpen}
         onClose={handleSubmitClose}
+        onSuccess={handleSubmitSuccess}
         limitReached={limitStatus?.limitReached}
       />
     </main>
