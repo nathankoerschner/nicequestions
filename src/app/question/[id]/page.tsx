@@ -40,10 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: question.text,
+    title: "Check out this nice question",
     description: "A beautiful question from Nice Questions",
     openGraph: {
-      title: question.text,
+      title: "Check out this nice question",
       description: "A beautiful question from Nice Questions",
       type: "website",
       siteName: "Nice Questions",
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: question.text,
+      title: "Check out this nice question",
       description: "A beautiful question from Nice Questions",
       images: [question.imageUrl],
     },
