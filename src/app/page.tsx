@@ -53,8 +53,8 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 py-6">
-          <h1 className="text-3xl font-bold tracking-tight text-black md:text-4xl">
-            Nice Questions
+          <h1 className="text-center text-3xl font-bold tracking-tight text-black md:text-4xl">
+            nicequestions.com
           </h1>
         </div>
       </header>
