@@ -51,33 +51,49 @@ User's submitted question: "${text}"`;
   return result as GPTValidationResult;
 }
 
+// Map categories to Unsplash search terms for better results
+const CATEGORY_SEARCH_TERMS: Record<Category, string[]> = {
+  relationships: ["people together", "friends", "family", "holding hands", "conversation"],
+  "self-reflection": ["mirror", "meditation", "solitude", "thinking", "journal"],
+  dreams: ["clouds", "stars", "night sky", "surreal", "fantasy landscape"],
+  memories: ["vintage", "old photos", "nostalgia", "childhood", "sunset"],
+  hypotheticals: ["crossroads", "doors", "paths", "abstract", "possibilities"],
+  values: ["nature", "mountains", "ocean", "forest", "peace"],
+  creativity: ["art", "paint", "colors", "creative", "inspiration"],
+  connection: ["hands", "community", "gathering", "warmth", "together"],
+};
+
 export async function generateQuestionImage(
   _question: string,
   category: Category
 ): Promise<Buffer> {
-  const prompt = `Create a photorealistic image related to the theme of "${category}".
-The image should be:
-- A beautiful photograph of nature or daily life
-- Photorealistic, like a professional photograph
-- Natural lighting and composition
-- NOT contain any text or letters
-- Suitable as a card background
-- Evocative and emotionally resonant
+  const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+  if (!accessKey) {
+    throw new Error("UNSPLASH_ACCESS_KEY environment variable is not set");
+  }
 
-Style: Professional photography, natural, authentic
-Subject: Nature scenes (landscapes, plants, animals, weather) or everyday life moments (hands, objects, activities, spaces)`;
+  // Pick a random search term for this category
+  const searchTerms = CATEGORY_SEARCH_TERMS[category];
+  const searchTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
 
-  const response = await getOpenAI().images.generate({
-    model: "dall-e-3",
-    prompt,
-    n: 1,
-    size: "1024x1024",
-    quality: "standard",
-  });
+  const response = await fetch(
+    `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish`,
+    {
+      headers: {
+        Authorization: `Client-ID ${accessKey}`,
+      },
+    }
+  );
 
-  const imageUrl = response.data?.[0]?.url;
+  if (!response.ok) {
+    throw new Error(`Unsplash API error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const imageUrl = data.urls?.regular;
+
   if (!imageUrl) {
-    throw new Error("No image URL returned from DALL-E");
+    throw new Error("No image URL returned from Unsplash");
   }
 
   // Fetch the image and return as buffer
