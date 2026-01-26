@@ -17,7 +17,7 @@ const app = initializeApp({
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-const UNSPLASH_COLLECTIONS = "ViZ7rtrjAgY,1319040"; // Film + Nature
+const UNSPLASH_COLLECTION = "ViZ7rtrjAgY"; // Film collection only
 
 const SAMPLE_QUESTIONS = [
   { text: "What's a question you've been afraid to ask?", category: "meet-yourself" },
@@ -40,6 +40,16 @@ const SAMPLE_QUESTIONS = [
   { text: "What's your earliest childhood memory?", category: "for-loved-ones" },
   { text: "What's something you believe that most people don't?", category: "big-questions" },
   { text: "What would you want to be remembered for?", category: "big-questions" },
+  { text: "What's a dream you've never told anyone about?", category: "meet-yourself" },
+  { text: "When do you feel most like yourself?", category: "meet-yourself" },
+  { text: "What's the most spontaneous thing you've ever done?", category: "for-a-gathering" },
+  { text: "What would you create if you had unlimited resources?", category: "for-crossroads" },
+  { text: "Who would you want to reconnect with?", category: "for-loved-ones" },
+  { text: "What's a tradition you want to start?", category: "for-a-gathering" },
+  { text: "What conversation changed your life?", category: "making-friends" },
+  { text: "What do you wish people understood about you?", category: "meet-yourself" },
+  { text: "What's your favorite way to show love?", category: "for-loved-ones" },
+  { text: "What question would you ask the universe?", category: "big-questions" },
 ];
 
 async function fetchUnsplashImage(usedIds: Set<string>): Promise<{ buffer: Buffer; unsplashId: string }> {
@@ -48,7 +58,7 @@ async function fetchUnsplashImage(usedIds: Set<string>): Promise<{ buffer: Buffe
 
   for (let attempt = 0; attempt < 10; attempt++) {
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?collections=${UNSPLASH_COLLECTIONS}&orientation=squarish`,
+      `https://api.unsplash.com/photos/random?collections=${UNSPLASH_COLLECTION}&orientation=squarish`,
       { headers: { Authorization: `Client-ID ${accessKey}` } }
     );
 
@@ -81,14 +91,14 @@ async function main() {
   console.log(`Deleted ${snapshot.size} questions.\n`);
 
   // Step 2: Add new questions with fresh images
-  console.log("Adding 20 new questions with images from Film + Nature collections...\n");
+  console.log(`Adding ${SAMPLE_QUESTIONS.length} new questions with images from Film collection...\n`);
   
   const bucket = storage.bucket();
   const usedIds = new Set<string>();
 
   for (let i = 0; i < SAMPLE_QUESTIONS.length; i++) {
     const q = SAMPLE_QUESTIONS[i];
-    console.log(`[${i + 1}/20] "${q.text.substring(0, 40)}..."`);
+    console.log(`[${i + 1}/${SAMPLE_QUESTIONS.length}] "${q.text.substring(0, 40)}..."`);
 
     // Fetch image
     const { buffer, unsplashId } = await fetchUnsplashImage(usedIds);
@@ -113,7 +123,7 @@ async function main() {
     console.log(`  ✓ Added with image ${unsplashId}`);
   }
 
-  console.log("\nDone! 20 new questions added.");
+  console.log(`\nDone! ${SAMPLE_QUESTIONS.length} new questions added.`);
 }
 
 main().catch(console.error);
