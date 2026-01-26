@@ -72,7 +72,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 py-6">
@@ -83,7 +83,7 @@ export default function Home() {
       </header>
 
       {/* Main content */}
-      <div className="mx-auto max-w-7xl px-4 pb-32">
+      <div className="pb-32 px-2 md:px-4">
         {isLoading ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-black" />
