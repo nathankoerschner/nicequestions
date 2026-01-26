@@ -106,21 +106,6 @@ export default function CardModal({ question, onClose }: CardModalProps) {
           </div>
         </div>
 
-        {/* Close button */}
-        <button
-          onClick={handleClose}
-          className="absolute -right-4 -top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black transition-transform hover:scale-110"
-          aria-label="Close"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="h-5 w-5"
-          >
-            <path d="M6.225 4.811a1 1 0 00-1.414 1.414L10.586 12 4.81 17.775a1 1 0 101.414 1.414L12 13.414l5.775 5.775a1 1 0 001.414-1.414L13.414 12l5.775-5.775a1 1 0 00-1.414-1.414L12 10.586 6.225 4.81z" />
-          </svg>
-        </button>
       </div>
     </div>
   );
