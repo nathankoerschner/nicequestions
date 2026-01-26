@@ -19,8 +19,8 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 const UNSPLASH_COLLECTION = "ViZ7rtrjAgY"; // Film collection
-const BATCH_SIZE = 50;
-const BATCH_DELAY_MS = 60 * 1000; // 1 minute between batches
+const BATCH_SIZE = 40; // Stay under 50/hour Unsplash limit
+const BATCH_DELAY_MS = 65 * 60 * 1000; // 65 minutes between batches (to reset rate limit)
 
 interface Question {
   text: string;
