@@ -23,7 +23,7 @@ export default function QuestionCard({
   return (
     <button
       onClick={onClick}
-      className={`group relative w-full ${sizeClasses[size]} mb-4 break-inside-avoid overflow-hidden rounded-2xl bg-zinc-900 transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/50`}
+      className={`group relative w-full ${sizeClasses[size]} mb-4 break-inside-avoid overflow-hidden bg-zinc-900 transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/50`}
     >
       <Image
         src={question.imageUrl}

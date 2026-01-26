@@ -188,7 +188,7 @@ export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitMod
                 }`}
               >
                 {/* Front - Image */}
-                <div className="absolute inset-0 backface-hidden overflow-hidden rounded-2xl">
+                <div className="absolute inset-0 backface-hidden overflow-hidden">
                   <Image
                     src={result.imageUrl}
                     alt=""
@@ -197,7 +197,7 @@ export default function SubmitModal({ isOpen, onClose, limitReached }: SubmitMod
                   />
                 </div>
                 {/* Back - Question */}
-                <div className="absolute inset-0 flex items-center justify-center backface-hidden rotate-y-180 rounded-2xl bg-black p-4">
+                <div className="absolute inset-0 flex items-center justify-center backface-hidden rotate-y-180 bg-black p-4">
                   <p className="text-center text-sm font-medium text-white">
                     {result.text}
                   </p>

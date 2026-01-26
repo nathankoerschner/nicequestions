@@ -75,7 +75,7 @@ export default async function QuestionPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      <div className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl">
+      <div className="relative w-full max-w-md aspect-[3/4] overflow-hidden shadow-2xl">
         {/* Background image */}
         <Image
           src={question.imageUrl}
