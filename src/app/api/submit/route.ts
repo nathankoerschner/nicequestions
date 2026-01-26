@@ -4,7 +4,7 @@ import { validateAndCleanQuestion, generateQuestionImage } from "@/lib/openai";
 import { DailyLimits } from "@/lib/types";
 
 const MAX_DAILY_ATTEMPTS = 100;
-const MAX_DAILY_ACCEPTED = 50;
+const MAX_DAILY_ACCEPTED = 100;
 
 function getTodayString(): string {
   return new Date().toISOString().split("T")[0];
