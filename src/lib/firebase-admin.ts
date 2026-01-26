@@ -6,8 +6,7 @@ let adminApp: App | undefined;
 
 function getAdminApp(): App {
   if (!adminApp) {
-    // Trim before converting escaped newlines to actual newlines
-    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.trim().replace(/\\n/g, "\n");
+    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
     if (getApps().length === 0) {
       adminApp = initializeApp({
