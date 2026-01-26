@@ -116,10 +116,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate image
-    const imageBuffer = await generateQuestionImage(
+    // Get all used Unsplash IDs to prevent duplicates
+    const questionsSnapshot = await adminDb.collection("questions").get();
+    const usedImageIds = new Set<string>();
+    questionsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.unsplashId) {
+        usedImageIds.add(data.unsplashId);
+      }
+    });
+
+    // Generate image (will retry if duplicate)
+    const imageResult = await generateQuestionImage(
       validation.cleanedText!,
-      validation.category!
+      validation.category!,
+      usedImageIds
     );
 
     // Upload to Firebase Storage
@@ -127,7 +138,7 @@ export async function POST(request: NextRequest) {
     const filename = `images/${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
     const file = bucket.file(filename);
 
-    await file.save(imageBuffer, {
+    await file.save(imageResult.buffer, {
       metadata: {
         contentType: "image/png",
       },
@@ -142,6 +153,7 @@ export async function POST(request: NextRequest) {
       text: validation.cleanedText,
       category: validation.category,
       imageUrl,
+      unsplashId: imageResult.unsplashId,
       createdAt: Date.now(),
     };
 
