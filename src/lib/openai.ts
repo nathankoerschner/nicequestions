@@ -53,14 +53,12 @@ User's submitted question: "${text}"`;
 
 // Map categories to Unsplash search terms for better results
 const CATEGORY_SEARCH_TERMS: Record<Category, string[]> = {
-  relationships: ["people together", "friends", "family", "holding hands", "conversation"],
-  "self-reflection": ["mirror", "meditation", "solitude", "thinking", "journal"],
-  dreams: ["clouds", "stars", "night sky", "surreal", "fantasy landscape"],
-  memories: ["vintage", "old photos", "nostalgia", "childhood", "sunset"],
-  hypotheticals: ["crossroads", "doors", "paths", "abstract", "possibilities"],
-  values: ["nature", "mountains", "ocean", "forest", "peace"],
-  creativity: ["art", "paint", "colors", "creative", "inspiration"],
-  connection: ["hands", "community", "gathering", "warmth", "together"],
+  "for-crossroads": ["crossroads", "paths", "decisions", "journey", "choices"],
+  "for-loved-ones": ["family", "loved ones", "together", "caring", "warmth"],
+  "making-friends": ["friendship", "meeting", "conversation", "socializing", "connection"],
+  "big-questions": ["universe", "cosmos", "philosophy", "wonder", "contemplation"],
+  "for-a-gathering": ["gathering", "celebration", "party", "group", "social"],
+  "meet-yourself": ["reflection", "mirror", "identity", "solitude", "meditation"],
 };
 
 export async function generateQuestionImage(

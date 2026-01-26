@@ -33,7 +33,7 @@ export default function CategoryFilter({
               : "bg-zinc-800 text-white hover:bg-zinc-700"
           }`}
         >
-          {category}
+          {category.replace(/-/g, " ")}
         </button>
       ))}
     </div>
