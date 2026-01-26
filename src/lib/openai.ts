@@ -61,10 +61,17 @@ const CATEGORY_SEARCH_TERMS: Record<Category, string[]> = {
   "meet-yourself": ["reflection", "mirror", "identity", "solitude", "meditation"],
 };
 
+export interface ImageResult {
+  buffer: Buffer;
+  unsplashId: string;
+}
+
 export async function generateQuestionImage(
   _question: string,
-  category: Category
-): Promise<Buffer> {
+  category: Category,
+  usedImageIds: Set<string> = new Set(),
+  maxRetries: number = 5
+): Promise<ImageResult> {
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
   if (!accessKey) {
     throw new Error("UNSPLASH_ACCESS_KEY environment variable is not set");
@@ -72,30 +79,46 @@ export async function generateQuestionImage(
 
   // Pick a random search term for this category
   const searchTerms = CATEGORY_SEARCH_TERMS[category];
-  const searchTerm = searchTerms[Math.floor(Math.random() * searchTerms.length)];
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    // Rotate through search terms on retries for more variety
+    const searchTerm = searchTerms[(attempt) % searchTerms.length];
 
-  const response = await fetch(
-    `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish`,
-    {
-      headers: {
-        Authorization: `Client-ID ${accessKey}`,
-      },
+    const response = await fetch(
+      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish`,
+      {
+        headers: {
+          Authorization: `Client-ID ${accessKey}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unsplash API error: ${response.status} ${response.statusText}`);
     }
-  );
 
-  if (!response.ok) {
-    throw new Error(`Unsplash API error: ${response.status} ${response.statusText}`);
+    const data = await response.json();
+    const imageUrl = data.urls?.regular;
+    const unsplashId = data.id;
+
+    if (!imageUrl || !unsplashId) {
+      throw new Error("No image URL or ID returned from Unsplash");
+    }
+
+    // Check if this image has already been used
+    if (usedImageIds.has(unsplashId)) {
+      console.log(`Duplicate image ${unsplashId} found, retrying (attempt ${attempt + 1}/${maxRetries})`);
+      continue;
+    }
+
+    // Fetch the image and return as buffer with ID
+    const imageResponse = await fetch(imageUrl);
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    return {
+      buffer: Buffer.from(arrayBuffer),
+      unsplashId,
+    };
   }
 
-  const data = await response.json();
-  const imageUrl = data.urls?.regular;
-
-  if (!imageUrl) {
-    throw new Error("No image URL returned from Unsplash");
-  }
-
-  // Fetch the image and return as buffer
-  const imageResponse = await fetch(imageUrl);
-  const arrayBuffer = await imageResponse.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  throw new Error(`Could not find unique image after ${maxRetries} attempts`);
 }
