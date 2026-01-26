@@ -2,14 +2,20 @@
 
 interface SubmitButtonProps {
   onClick: () => void;
+  disabled?: boolean;
 }
 
-export default function SubmitButton({ onClick }: SubmitButtonProps) {
+export default function SubmitButton({ onClick, disabled }: SubmitButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-20 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-lg transition-transform hover:scale-110 active:scale-95 md:h-16 md:w-16"
-      aria-label="Submit a question"
+      disabled={disabled}
+      className={`fixed bottom-20 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform md:h-16 md:w-16 ${
+        disabled
+          ? "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+          : "bg-black text-white hover:scale-110 active:scale-95"
+      }`}
+      aria-label={disabled ? "Daily limit reached" : "Submit a question"}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

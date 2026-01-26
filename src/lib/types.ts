@@ -47,3 +47,11 @@ export interface GPTValidationResult {
   category?: Category;
   reason?: string;
 }
+
+export interface LimitStatus {
+  limitReached: boolean;
+  attempts: number;
+  maxAttempts: number;
+  accepted: number;
+  maxAccepted: number;
+}
