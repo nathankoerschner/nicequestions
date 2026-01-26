@@ -36,7 +36,7 @@ export default function MasonryGrid({
   }
 
   return (
-    <div className="columns-2 gap-2 md:columns-3 md:gap-3 lg:columns-4 xl:columns-5">
+    <div className="-mx-6 md:-mx-12 lg:-mx-16 columns-2 gap-2 md:columns-3 md:gap-3 lg:columns-4 xl:columns-5 px-0">
       {questions.map((question, index) => (
         <QuestionCard
           key={question.id}
