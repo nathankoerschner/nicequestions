@@ -8,7 +8,7 @@ export default function SubmitButton({ onClick }: SubmitButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-lg transition-transform hover:scale-110 active:scale-95 md:h-16 md:w-16"
+      className="fixed bottom-20 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-lg transition-transform hover:scale-110 active:scale-95 md:h-16 md:w-16"
       aria-label="Submit a question"
     >
       <svg
