@@ -89,7 +89,7 @@ export async function generateQuestionImage(
     const searchTerm = IMAGE_SEARCH_TERMS[Math.floor(Math.random() * IMAGE_SEARCH_TERMS.length)];
 
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish`,
+      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish&featured=true`,
       {
         headers: {
           Authorization: `Client-ID ${accessKey}`,
