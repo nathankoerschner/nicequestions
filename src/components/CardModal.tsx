@@ -13,25 +13,42 @@ interface CardModalProps {
 export default function CardModal({ question, onClose }: CardModalProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     if (question) {
+      // Stage 0: Background fades in
       setIsVisible(true);
-      // Start the flip animation after a brief pause
-      const timer = setTimeout(() => setIsFlipped(true), 600);
-      return () => clearTimeout(timer);
+      // Stage 1: Card zooms in after background starts fading
+      const zoomTimer = setTimeout(() => setIsZoomed(true), 200);
+      // Stage 2: Pause on image, then dramatic flip
+      const flipTimer = setTimeout(() => setIsFlipped(true), 1280);
+      return () => {
+        clearTimeout(zoomTimer);
+        clearTimeout(flipTimer);
+      };
     } else {
       setIsFlipped(false);
+      setIsZoomed(false);
       setIsVisible(false);
     }
   }, [question]);
 
   const handleClose = useCallback(() => {
+    // Stage 1: Flip back
     setIsFlipped(false);
+    // Stage 2: Zoom out after flip
+    setTimeout(() => {
+      setIsZoomed(false);
+    }, 400);
+    // Stage 3: Fade background after card is gone
     setTimeout(() => {
       setIsVisible(false);
+    }, 1100);
+    // Stage 4: Clean up after background fades
+    setTimeout(() => {
       onClose();
-    }, 400);
+    }, 1800);
   }, [onClose]);
 
   useEffect(() => {
@@ -46,18 +63,22 @@ export default function CardModal({ question, onClose }: CardModalProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-700 ease-in-out ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={handleClose}
     >
       <div
-        className="perspective-1000 relative h-[70vh] w-[85vw] max-w-md cursor-default"
+        className={`perspective-1000 relative h-[70vh] w-[85vw] max-w-md cursor-default transition-all duration-500 ease-out ${
+          isZoomed
+            ? "scale-100 opacity-100 shadow-2xl shadow-black/50"
+            : "scale-75 opacity-0"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className={`relative h-full w-full transition-transform duration-700 transform-style-3d ${
-            isFlipped ? "rotate-y-180" : ""
+          className={`relative h-full w-full transform-style-3d transition-transform ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            isFlipped ? "rotate-y-180 duration-700" : "duration-500"
           }`}
         >
           {/* Front of card - Image */}
