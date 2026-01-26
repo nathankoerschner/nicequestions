@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #000000;
 }
 
 @theme inline {
@@ -56,7 +56,7 @@ img {
 /* Focus styles */
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid white;
+  outline: 2px solid black;
   outline-offset: 2px;
 }
 
@@ -69,6 +69,6 @@ a:focus-visible {
 
 /* Selection color */
 ::selection {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: rgba(0, 0, 0, 0.2);
+  color: black;
 }

@@ -17,8 +17,8 @@ export default function CategoryFilter({
         onClick={() => onChange(null)}
         className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
           selected === null
-            ? "bg-white text-black"
-            : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+            ? "bg-black text-white"
+            : "bg-zinc-800 text-white hover:bg-zinc-700"
         }`}
       >
         All
@@ -29,8 +29,8 @@ export default function CategoryFilter({
           onClick={() => onChange(category)}
           className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium capitalize transition-colors ${
             selected === category
-              ? "bg-white text-black"
-              : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+              ? "bg-black text-white"
+              : "bg-zinc-800 text-white hover:bg-zinc-700"
           }`}
         >
           {category}
