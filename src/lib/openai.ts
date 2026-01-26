@@ -51,22 +51,8 @@ User's submitted question: "${text}"`;
   return result as GPTValidationResult;
 }
 
-// General aesthetic search terms - unrelated to question content per spec
-// Mix of nature, everyday moments, architecture, and human elements
-const IMAGE_SEARCH_TERMS = [
-  // Nature
-  "nature", "landscape", "forest", "ocean", "mountains", "sunset", "morning light",
-  // Everyday moments  
-  "coffee", "books", "morning routine", "quiet moment", "simple life",
-  // Hands and human elements
-  "hands", "holding hands", "hand holding coffee", "writing by hand", "hands working",
-  // People doing everyday things
-  "person walking", "reading book", "cooking", "gardening", "bike ride",
-  // Architecture and urban
-  "architecture", "buildings", "street photography", "urban", "windows",
-  // Aesthetic/artistic
-  "minimal", "black and white photography", "film photography", "light and shadow"
-];
+// Using curated "Film" collection from Unsplash for high-quality aesthetic images
+const UNSPLASH_COLLECTION_ID = "ViZ7rtrjAgY"; // Film collection - 2300+ curated photos
 
 export interface ImageResult {
   buffer: Buffer;
@@ -85,11 +71,8 @@ export async function generateQuestionImage(
   }
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    // Pick a random search term from the general pool
-    const searchTerm = IMAGE_SEARCH_TERMS[Math.floor(Math.random() * IMAGE_SEARCH_TERMS.length)];
-
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=squarish&featured=true`,
+      `https://api.unsplash.com/photos/random?collections=${UNSPLASH_COLLECTION_ID}&orientation=squarish`,
       {
         headers: {
           Authorization: `Client-ID ${accessKey}`,
