@@ -90,7 +90,7 @@ export default function Home() {
       </header>
 
       {/* Filter Bar - at top, not sticky */}
-      <div className="bg-white border-b border-zinc-200">
+      <div className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4">
           <CategoryFilter
             selected={selectedCategory}
