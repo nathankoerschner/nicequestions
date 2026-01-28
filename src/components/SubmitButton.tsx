@@ -10,7 +10,7 @@ export default function SubmitButton({ onClick, disabled }: SubmitButtonProps) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`fixed bottom-20 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform md:h-16 md:w-16 ${
+      className={`fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform md:bottom-8 md:right-8 md:h-16 md:w-16 ${
         disabled
           ? "bg-zinc-300 text-zinc-500 cursor-not-allowed"
           : "bg-black text-white hover:scale-110 active:scale-95"
