@@ -8,23 +8,24 @@ interface MasonryGridProps {
   onCardClick: (question: Question) => void;
 }
 
-// Assign varied sizes based on index for visual interest - more dramatic variation
+// Generate varied sizes that avoid adjacent duplicates across columns
+const sizes = ["small", "medium", "large", "xlarge"] as const;
+
+// Pattern designed to minimize same-size adjacency across different column counts (2-5)
+// Each row in the pattern should have different sizes
+const masterPattern = [
+  "medium", "small", "xlarge", "large", "medium",    // row 1
+  "small", "large", "medium", "xlarge", "small",     // row 2
+  "xlarge", "medium", "small", "medium", "large",    // row 3
+  "large", "xlarge", "large", "small", "xlarge",     // row 4
+  "small", "large", "medium", "large", "medium",     // row 5
+  "medium", "small", "xlarge", "medium", "small",    // row 6
+  "xlarge", "large", "small", "xlarge", "large",     // row 7
+  "large", "medium", "large", "small", "xlarge",     // row 8
+] as const;
+
 function getCardSize(index: number): "small" | "medium" | "large" | "xlarge" {
-  const pattern = [
-    "medium",
-    "xlarge",
-    "small",
-    "large",
-    "small",
-    "medium",
-    "large",
-    "small",
-    "xlarge",
-    "medium",
-    "small",
-    "large",
-  ] as const;
-  return pattern[index % pattern.length];
+  return masterPattern[index % masterPattern.length] as "small" | "medium" | "large" | "xlarge";
 }
 
 export default function MasonryGrid({
