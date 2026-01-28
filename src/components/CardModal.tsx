@@ -14,6 +14,7 @@ export default function CardModal({ question, onClose }: CardModalProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [showCloseButton, setShowCloseButton] = useState(false);
 
   useEffect(() => {
     if (question) {
@@ -23,18 +24,24 @@ export default function CardModal({ question, onClose }: CardModalProps) {
       const zoomTimer = setTimeout(() => setIsZoomed(true), 200);
       // Stage 2: Pause on image, then dramatic flip
       const flipTimer = setTimeout(() => setIsFlipped(true), 1280);
+      // Stage 3: Show close button after flip animation completes
+      const closeButtonTimer = setTimeout(() => setShowCloseButton(true), 2000);
       return () => {
         clearTimeout(zoomTimer);
         clearTimeout(flipTimer);
+        clearTimeout(closeButtonTimer);
       };
     } else {
       setIsFlipped(false);
       setIsZoomed(false);
       setIsVisible(false);
+      setShowCloseButton(false);
     }
   }, [question]);
 
   const handleClose = useCallback(() => {
+    // Hide close button immediately
+    setShowCloseButton(false);
     // Stage 1: Flip back
     setIsFlipped(false);
     // Stage 2: Zoom out after flip
@@ -94,6 +101,29 @@ export default function CardModal({ question, onClose }: CardModalProps) {
 
           {/* Back of card - Question */}
           <div className="absolute inset-0 flex flex-col items-center justify-center backface-hidden rotate-y-180 bg-black p-8">
+            {/* Close button - appears after flip animation */}
+            <button
+              onClick={handleClose}
+              className={`absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white text-black transition-opacity duration-300 ${
+                showCloseButton ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
+              aria-label="Close"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
             <p className="text-center text-2xl font-medium leading-relaxed text-white md:text-3xl">
               {question.text}
             </p>
