@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Question, Category } from "@/lib/types";
+import { Question, Category, LimitStatus } from "@/lib/types";
 import MasonryGrid from "@/components/MasonryGrid";
 import CardModal from "@/components/CardModal";
 import CategoryFilter from "@/components/CategoryFilter";
+import SubmitButton from "@/components/SubmitButton";
+import SubmitModal from "@/components/SubmitModal";
 import Link from "next/link";
 
 interface DeepLinkViewProps {
@@ -18,6 +20,22 @@ export default function DeepLinkView({ questionId }: DeepLinkViewProps) {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
+  const [isSubmitOpen, setIsSubmitOpen] = useState(false);
+  const [limitStatus, setLimitStatus] = useState<LimitStatus | null>(null);
+
+  const fetchLimits = async () => {
+    try {
+      const response = await fetch("/api/limits");
+      const data = await response.json();
+      setLimitStatus(data);
+    } catch (error) {
+      console.error("Failed to fetch limits:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLimits();
+  }, []);
 
   // Fisher-Yates shuffle for random order
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -74,6 +92,17 @@ export default function DeepLinkView({ questionId }: DeepLinkViewProps) {
     setSelectedQuestion(null);
   };
 
+  const handleSubmitClose = () => {
+    setIsSubmitOpen(false);
+    fetchLimits();
+  };
+
+  const handleSubmitSuccess = (newQuestion: Question) => {
+    setQuestions((prev) => [newQuestion, ...prev]);
+    setFilteredQuestions((prev) => [newQuestion, ...prev]);
+    setSelectedQuestion(newQuestion);
+  };
+
   return (
     <main className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
@@ -111,8 +140,19 @@ export default function DeepLinkView({ questionId }: DeepLinkViewProps) {
         )}
       </div>
 
-      {/* Card Modal */}
+      {/* Submit FAB - hidden when daily limit reached */}
+      {!limitStatus?.limitReached && (
+        <SubmitButton onClick={() => setIsSubmitOpen(true)} />
+      )}
+
+      {/* Modals */}
       <CardModal question={selectedQuestion} onClose={handleClose} />
+      <SubmitModal
+        isOpen={isSubmitOpen}
+        onClose={handleSubmitClose}
+        onSuccess={handleSubmitSuccess}
+        limitReached={limitStatus?.limitReached}
+      />
     </main>
   );
 }
