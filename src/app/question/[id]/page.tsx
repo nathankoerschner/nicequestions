@@ -34,18 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!question) {
     return {
-      title: "Question Not Found | Nice Questions",
+      title: "Question Not Found | nicequestions.com",
     };
   }
 
   return {
     title: "Check out this nice question",
-    description: "A beautiful question from Nice Questions",
+    description: "A beautiful question from nicequestions.com",
     openGraph: {
       title: "Check out this nice question",
-      description: "A beautiful question from Nice Questions",
+      description: "A beautiful question from nicequestions.com",
       type: "website",
-      siteName: "Nice Questions",
+      siteName: "nicequestions.com",
       images: [
         {
           url: question.imageUrl,
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "Check out this nice question",
-      description: "A beautiful question from Nice Questions",
+      description: "A beautiful question from nicequestions.com",
       images: [question.imageUrl],
     },
   };
