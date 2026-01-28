@@ -81,8 +81,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-zinc-100">
-        <div className="mx-auto max-w-7xl px-4 py-8">
+      <header className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 pt-6 pb-2">
           <h1 className="text-4xl font-bold tracking-tight text-black md:text-5xl">
             nicequestions.com
           </h1>
