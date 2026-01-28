@@ -3,8 +3,8 @@ import { adminDb, adminStorage } from "@/lib/firebase-admin";
 import { validateAndCleanQuestion, generateQuestionImage } from "@/lib/openai";
 import { DailyLimits } from "@/lib/types";
 
-const MAX_DAILY_ATTEMPTS = 100;
-const MAX_DAILY_ACCEPTED = 100;
+const MAX_DAILY_ATTEMPTS = 200;
+const MAX_DAILY_ACCEPTED = 200;
 
 function getTodayString(): string {
   return new Date().toISOString().split("T")[0];
