@@ -8,17 +8,21 @@ interface MasonryGridProps {
   onCardClick: (question: Question) => void;
 }
 
-// Assign varied sizes based on index for visual interest
-function getCardSize(index: number): "small" | "medium" | "large" {
+// Assign varied sizes based on index for visual interest - more dramatic variation
+function getCardSize(index: number): "small" | "medium" | "large" | "xlarge" {
   const pattern = [
     "medium",
+    "xlarge",
+    "small",
     "large",
     "small",
     "medium",
-    "small",
     "large",
+    "small",
+    "xlarge",
     "medium",
     "small",
+    "large",
   ] as const;
   return pattern[index % pattern.length];
 }

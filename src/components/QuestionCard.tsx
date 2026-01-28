@@ -6,13 +6,14 @@ import Image from "next/image";
 interface QuestionCardProps {
   question: Question;
   onClick: () => void;
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "xlarge";
 }
 
 const sizeClasses = {
-  small: "h-48",
-  medium: "h-64",
-  large: "h-80",
+  small: "h-40",
+  medium: "h-56",
+  large: "h-72",
+  xlarge: "h-96",
 };
 
 export default function QuestionCard({
