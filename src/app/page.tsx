@@ -81,16 +81,26 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md">
+      <header className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <h1 className="text-3xl font-bold tracking-tight text-black md:text-4xl">
-            Nice Questions
+            nicequestions.com
           </h1>
         </div>
       </header>
 
+      {/* Filter Bar - at top, not sticky */}
+      <div className="bg-white border-b border-zinc-200">
+        <div className="mx-auto max-w-7xl px-4 py-4">
+          <CategoryFilter
+            selected={selectedCategory}
+            onChange={setSelectedCategory}
+          />
+        </div>
+      </div>
+
       {/* Main content - edge to edge */}
-      <div className="pb-32">
+      <div className="pb-24">
         {isLoading ? (
           <div className="flex min-h-[50vh] items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-black" />
@@ -101,16 +111,6 @@ export default function Home() {
             onCardClick={setSelectedQuestion}
           />
         )}
-      </div>
-
-      {/* Bottom Filter Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/80 backdrop-blur-md border-t border-zinc-200">
-        <div className="mx-auto max-w-7xl px-4 py-4">
-          <CategoryFilter
-            selected={selectedCategory}
-            onChange={setSelectedCategory}
-          />
-        </div>
       </div>
 
       {/* Submit FAB - hidden when daily limit reached */}
